@@ -1,0 +1,35 @@
+<h1>Servers info</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+<p *ngIf="!servers"><em>Loading servers info...</em></p>
+
+<input #newServer
+       (keyup.enter)="addServer(newServer.value); newServer.value=''">
+<button mat-raised-button (click)="addServer(newServer.value); newServer.value=''" color="primary">Add server</button>
+<button mat-raised-button (click)="updServers()" color="primary">Upd</button>
+
+
+
+<table class='table' *ngIf="servers">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>URI</th>
+      <th>Busy</th>
+      <th>Percentage</th>
+      <th>Current Task Number</th>
+      <th>Total Tasks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let server of servers">
+      <td>{{ server.name }}</td>
+      <td>{{ server.uri }}</td>
+      <td>{{ server.isBusy }}</td>
+      <td>{{ server.persentageDone }}</td>
+      <td>{{ server.curTaskNumber }}</td>
+      <td>{{ server.totalTasksNumber }}</td>
+    </tr>
+  </tbody>
+</table>
