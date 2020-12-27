@@ -1,25 +1,25 @@
-<h1>Servers info</h1>
+<h1>Мониторинг серверов</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
+<p>Данная страница демонстрирует возможности менеджера серверов.</p>
 
-<p *ngIf="!servers"><em>Loading servers info...</em></p>
+<p *ngIf="!servers"><em>Информация о серверах загружается...</em></p>
 
 <input #newServer
        (keyup.enter)="addServer(newServer.value); newServer.value=''">
-<button mat-raised-button (click)="addServer(newServer.value); newServer.value=''" color="primary">Add server</button>
-<button mat-raised-button (click)="updServers()" color="primary">Upd</button>
+<button mat-raised-button (click)="addServer(newServer.value); newServer.value=''" color="primary">Добавить</button>
+<button mat-raised-button (click)="updServers()" color="primary">Обновить состояние серверов</button>
 
 
 
 <table class='table' *ngIf="servers">
   <thead>
     <tr>
-      <th>Name</th>
-      <th>URI</th>
-      <th>Busy</th>
-      <th>Percentage</th>
-      <th>Current Task Number</th>
-      <th>Total Tasks</th>
+      <th>Название</th>
+      <th>Адрес</th>
+      <th>Статус</th>
+      <th>Прогресс</th>
+      <th>Номер текущей задачи</th>
+      <th>Общее число задач</th>
     </tr>
   </thead>
   <tbody>
