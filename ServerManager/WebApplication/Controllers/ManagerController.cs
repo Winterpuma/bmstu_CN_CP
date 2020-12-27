@@ -63,6 +63,17 @@ namespace WebApplication.Controllers
             else
                 return Conflict(res);
         }
+
+        [HttpPost("[action]")]
+        public ActionResult<IEnumerable<Server>> SendRequest([FromBody]RequestUri uri)
+        {
+            int res = manager.SendGetRequest(uri.uri);
+
+            if (res != 0)
+                return Conflict(res); //Locked??
+            else
+                return Ok(manager.Servers);
+        }
     }
 
 

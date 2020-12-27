@@ -18,7 +18,7 @@ namespace ServerManager
         //DateTime busyStart;
 
         public int CurTaskNumber { get; private set; } = 0;
-        public int TotalTasksNumber { get; private set; } = 0;
+        public Int64 TotalTasksNumber { get; private set; } = 0;
         public int PersentageDone { get; private set; } = 100;
 
 
@@ -31,13 +31,16 @@ namespace ServerManager
             //_client.Timeout = TimeSpan.FromMinutes(1);
         }
 
-        public string SendGetRequest(string path)
+        public void SendGetRequest(string path)
         {
-            return GetMethod(path).Result;
+            GetMethod(path);
         }
 
-        public string UpdateServerState()
+        public string UpdateServerState(bool force = false)
         {
+            if (!force && (State == ServerState.NoState || State == ServerState.Down))
+                return null;
+
             JObject root;
             string resJson = GetMethod("/state", false).Result;
 
@@ -55,7 +58,7 @@ namespace ServerManager
 
             Name = root.Value<string>("name");
             CurTaskNumber = root.Value<int>("current");
-            TotalTasksNumber = root.Value<int>("total");
+            TotalTasksNumber = root.Value<Int64>("total");
             PersentageDone =  (TotalTasksNumber == 0) ? 0 : 
                 Convert.ToInt32(100 * ((double)CurTaskNumber / (double)TotalTasksNumber));
 

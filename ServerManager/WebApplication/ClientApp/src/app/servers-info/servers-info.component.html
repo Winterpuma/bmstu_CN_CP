@@ -1,14 +1,18 @@
 <h1>Мониторинг серверов</h1>
 
-<p>Данная страница демонстрирует возможности менеджера серверов. {{test}}</p>
+<p>Данная страница демонстрирует возможности менеджера серверов.</p>
 
 <p *ngIf="!servers"><em>Информация о серверах загружается...</em></p>
 
 <input #inputServer
-       (keyup.enter)="addServer(inputServer.value); newServer.value=''">
+       (keyup.enter)="addServer(inputServer.value); inputServer.value=''">
 <button mat-raised-button (click)="addServer(inputServer.value); inputServer.value=''" color="primary">Добавить</button>
 <button mat-raised-button (click)="deleteServer(inputServer.value); inputServer.value=''" color="primary">Удалить</button>
 <button mat-raised-button (click)="updServers()" color="primary">Обновить состояние серверов</button>
+
+<input #inputRequest
+       (keyup.enter)="sendRequest(inputRequest.value); inputRequest.value=''">
+<button mat-raised-button (click)="sendRequest(inputRequest.value); inputRequest.value=''" color="primary">Отправить запрос</button>
 
 
 <table class='table' *ngIf="servers">
@@ -16,20 +20,24 @@
     <tr>
       <th>Название</th>
       <th>Адрес</th>
-      <th>Статус</th>
+      <th>Состояние</th>
       <th>Прогресс</th>
       <th>Номер текущей задачи</th>
       <th>Общее число задач</th>
+      <th>Запрос</th>
+      <th>Ответ</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let server of servers">
       <td>{{ server.name }}</td>
       <td>{{ server.uri }}</td>
-      <td>{{ server.state }}</td>
+      <td>{{ server.strState }}</td>
       <td>{{ server.persentageDone }}</td>
       <td>{{ server.curTaskNumber }}</td>
       <td>{{ server.totalTasksNumber }}</td>
+      <td>{{ server.request }}</td>
+      <td>{{ server.response }}</td>
     </tr>
   </tbody>
 </table>

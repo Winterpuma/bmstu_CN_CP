@@ -39,24 +39,28 @@ namespace ServerManager
 
         public int SendGetRequest(string path) // возможно переделать на asynk
         {
+            bool success = false;
             foreach (Server server in availableServers.Values)
             {
                 if (server.State == ServerState.Free) // нашли свободный сервер
                 {
+                    success = true;
                     CurRequestIndex++;
                     requestToServer[CurRequestIndex] = server; // текущий реквест связываем с сервером
-                    server.SendGetRequest(path); // TODO проверка что успешно отправили?
+                    server.SendGetRequest(path);
+                    break;
                 }
             }
+
+            if (!success)
+                return -1;
 
             return CurRequestIndex;
         }
 
         public string GetRequestState(int requestId) // а что если такого нет???
         {
-            string path = "/state";
-
-            return requestToServer[requestId].SendGetRequest(path);
+            return requestToServer[requestId].UpdateServerState();
         }
         
         public void UpdateAllServers()
