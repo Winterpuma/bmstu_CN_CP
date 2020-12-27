@@ -1,12 +1,3 @@
-%:- use_module(library(dif)).	% Sound inequality
-%:- use_module(library(clpfd)).	% Finite domain constraints
-%:- use_module(library(clpb)).	% Boolean constraints
-%:- use_module(library(chr)).	% Constraint Handling Rules
-%:- use_module(library(when)).	% Coroutining
-%:- use_module(library(apply)).
-%:- use_module(library(thread)).
-
-
 :- use_module(library(http/thread_httpd)).
 :- use_module(library(http/http_dispatch)).
 :- use_module(library(http/http_error)).
@@ -17,7 +8,9 @@
 :- initialization server.
 
 server() :-
-	http_server(http_dispatch, [port(8080)]).
+	current_prolog_flag(argv, [StrPortNumber | _]), % из аргументов командной строки
+	atom_number(StrPortNumber, PortNumber),
+	http_server(http_dispatch, [port(PortNumber)]).
 
 
 
@@ -37,7 +30,7 @@ myQuery(Ans) :-
 :- http_handler(root(fact/N), getFact(M, N), [method(M),methods([get])]).
 
 
-getFact(get, AtomN, R) :-
+getFact(get, AtomN, _R) :-
 	atom_number(AtomN, N),
 	factorial(N, Ans),
 	reply_json(json{answer:Ans}).
