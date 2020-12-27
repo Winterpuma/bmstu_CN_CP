@@ -41,7 +41,7 @@ namespace ServerManager
         {
             foreach (Server server in availableServers.Values)
             {
-                if (!server.IsBusy) // нашли свободный сервер
+                if (server.State == ServerState.Free) // нашли свободный сервер
                 {
                     CurRequestIndex++;
                     requestToServer[CurRequestIndex] = server; // текущий реквест связываем с сервером
