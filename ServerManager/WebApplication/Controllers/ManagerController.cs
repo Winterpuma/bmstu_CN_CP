@@ -21,102 +21,44 @@ namespace WebApplication.Controllers
         }
 
         [HttpPost("[action]")]
-        public ActionResult AddServer([FromBody]RequestUri uri) // return success state?
+        public ActionResult AddServer([FromBody]RequestUri uri)
         {
+            int res = -1;
             try
             {
-                manager.AddServer(new Uri(uri.uri));
+                res = manager.AddServer(new Uri(uri.uri));
             }
             catch (UriFormatException)
             {
                 return BadRequest();
             }
-            return Ok();
-        }
-        
 
-        /*
-        // GET: Manager
-        public ActionResult Index()
-        {
-            return View();
+            if (res == 0)
+                return Ok();
+            else
+                return Conflict(res);
         }
 
-        // GET: Manager/Details/5
-        public ActionResult Details(int id)
+        [HttpPost("[action]")]
+        public ActionResult DeleteServer([FromBody]RequestUri uri)
         {
-            return View();
-        }
-
-        // GET: Manager/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Manager/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
+            int res = -1;
             try
             {
-                // TODO: Add insert logic here
-
-                return RedirectToAction(nameof(Index));
+                res = manager.DeleteServer(new Uri(uri.uri));
             }
-            catch
+            catch (UriFormatException)
             {
-                return View();
+                return BadRequest();
             }
+
+            if (res == 0)
+                return Ok();
+            else
+                return Conflict(res);
         }
-
-        // GET: Manager/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: Manager/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Manager/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Manager/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }*/
     }
+
 
     public class RequestUri
     {

@@ -1,35 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Collections.Concurrent;
 
 namespace ServerManager
 {
     public class Manager
     {
-        List<Server> availableServers;
+        ConcurrentDictionary<Uri, Server> availableServers;
         public int CurRequestIndex { get; private set; }
         Dictionary<int, Server> requestToServer;
 
         public IEnumerable<Server> Servers
         {
-            get => availableServers;
+            get => availableServers.Values;
         }
 
         public Manager()
         {
-            availableServers = new List<Server>();
+            availableServers = new ConcurrentDictionary<Uri, Server>();
             requestToServer = new Dictionary<int, Server>();
         }
 
-        public void AddServer(Uri uri)
+        public int AddServer(Uri uri)
         {
-            availableServers.Add(new Server(uri));
-            CurRequestIndex++; // REMOVEEEEEEEEE
+            bool added = availableServers.TryAdd(uri, new Server(uri));
+            if (!added)
+                return -1;
+            return 0;
+        }
+
+        public int DeleteServer(Uri uri)
+        {
+            bool removed = availableServers.TryRemove(uri, out Server value);
+            if (!removed)
+                return -1;
+            return 0;
         }
 
         public int SendGetRequest(string path) // возможно переделать на asynk
         {
-            foreach (Server server in availableServers)
+            foreach (Server server in availableServers.Values)
             {
                 if (!server.IsBusy) // нашли свободный сервер
                 {
@@ -51,7 +61,7 @@ namespace ServerManager
         
         public void UpdateAllServers()
         {
-            foreach (Server server in availableServers)
+            foreach (Server server in availableServers.Values)
                 server.UpdateServerState();
         }
     }

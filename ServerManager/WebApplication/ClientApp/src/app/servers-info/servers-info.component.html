@@ -4,9 +4,10 @@
 
 <p *ngIf="!servers"><em>Информация о серверах загружается...</em></p>
 
-<input #newServer
-       (keyup.enter)="addServer(newServer.value); newServer.value=''">
-<button mat-raised-button (click)="addServer(newServer.value); newServer.value=''" color="primary">Добавить</button>
+<input #inputServer
+       (keyup.enter)="addServer(inputServer.value); newServer.value=''">
+<button mat-raised-button (click)="addServer(inputServer.value); inputServer.value=''" color="primary">Добавить</button>
+<button mat-raised-button (click)="deleteServer(inputServer.value); inputServer.value=''" color="primary">Удалить</button>
 <button mat-raised-button (click)="updServers()" color="primary">Обновить состояние серверов</button>
 
 

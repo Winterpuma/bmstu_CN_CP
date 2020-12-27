@@ -14,18 +14,10 @@ export class ServersInfoComponent {
   indx = -1;
 
   constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
-    /*http.get<ServerInfo[]>(baseUrl + 'api/Manager/GetServers').subscribe(result => {
-      this.servers = result;
-    }, error => console.error(error));
-
-    http.get<number>(baseUrl + 'api/Manager/GetCurRequestIndex').subscribe(result => {
-      this.indx = result;
-    }, error => console.error(error));*/
 
     this.http = http;
     this.baseUrl = baseUrl;
-
-    this.updIndx();
+    
     this.updServers();
   }
 
@@ -34,10 +26,9 @@ export class ServersInfoComponent {
     this.http.post(this.baseUrl + 'api/Manager/AddServer', { uri: address }, { headers: headers }).subscribe(result => { }, error => console.error(error));
   }
 
-  updIndx() {
-    this.http.get<number>(this.baseUrl + 'api/Manager/GetCurRequestIndex').subscribe(result => {
-      this.indx = result;
-    }, error => console.error(error));
+  deleteServer(address: string) {
+    var headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
+    this.http.post(this.baseUrl + 'api/Manager/DeleteServer', { uri: address }, { headers: headers }).subscribe(result => { }, error => console.error(error));
   }
 
   updServers() {
