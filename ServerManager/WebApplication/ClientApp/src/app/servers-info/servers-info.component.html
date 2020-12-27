@@ -1,6 +1,6 @@
 <h1>Мониторинг серверов</h1>
 
-<p>Данная страница демонстрирует возможности менеджера серверов.</p>
+<p>Данная страница демонстрирует возможности менеджера серверов. {{test}}</p>
 
 <p *ngIf="!servers"><em>Информация о серверах загружается...</em></p>
 
@@ -9,7 +9,6 @@
 <button mat-raised-button (click)="addServer(inputServer.value); inputServer.value=''" color="primary">Добавить</button>
 <button mat-raised-button (click)="deleteServer(inputServer.value); inputServer.value=''" color="primary">Удалить</button>
 <button mat-raised-button (click)="updServers()" color="primary">Обновить состояние серверов</button>
-
 
 
 <table class='table' *ngIf="servers">
@@ -27,7 +26,7 @@
     <tr *ngFor="let server of servers">
       <td>{{ server.name }}</td>
       <td>{{ server.uri }}</td>
-      <td>{{ server.isBusy }}</td>
+      <td>{{ server.state }}</td>
       <td>{{ server.persentageDone }}</td>
       <td>{{ server.curTaskNumber }}</td>
       <td>{{ server.totalTasksNumber }}</td>
