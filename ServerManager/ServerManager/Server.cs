@@ -1,34 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using System.Timers;
-using System.Web;
 using Newtonsoft.Json.Linq;
 
 namespace ServerManager
 {
     public class Server
     {
+        private HttpClient _client;
         public string Name { get; private set; }
         public Uri Uri { get; set; }
+        
 
-        // state
-        // is up?
-        public bool IsBusy { get; set; } = true;
+        public ServerState State { get; set; }
+        public string Request { get; private set; }
+        public string Response { get; private set; }
         //DateTime busyStart;
 
         public int CurTaskNumber { get; private set; } = 0;
         public int TotalTasksNumber { get; private set; } = 0;
         public int PersentageDone { get; private set; } = 100;
 
-        // curRequest
-        // response
 
         public Server(Uri uri)
         {
             Uri = uri;
+
+            _client = new HttpClient();
+            _client.BaseAddress = Uri;
+            //_client.Timeout = TimeSpan.FromMinutes(1);
         }
 
         public string SendGetRequest(string path)
@@ -38,9 +38,20 @@ namespace ServerManager
 
         public string UpdateServerState()
         {
-            string resJson = GetMethod("/state").Result;
+            JObject root;
+            string resJson = GetMethod("/state", false).Result;
 
-            JObject root = JObject.Parse(resJson);
+            try
+            {
+                root = JObject.Parse(resJson);
+            }
+            catch (Newtonsoft.Json.JsonReaderException)
+            {
+                if (resJson.Contains("404 Not Found"))
+                    State = ServerState.NoState; // нет пути для получения статуса
+
+                return null;
+            }
 
             Name = root.Value<string>("name");
             CurTaskNumber = root.Value<int>("current");
@@ -51,17 +62,34 @@ namespace ServerManager
             return resJson;
         }
 
-        public async Task<string> GetMethod(string path)
+        public async Task<string> GetMethod(string path, bool saveRes = true)
         {
-            HttpClient client = new HttpClient();
+            if (saveRes)
+            {
+                Request = path;
+                Response = null;
+                State = ServerState.Busy;
+            }
 
-            client.Timeout = TimeSpan.FromMinutes(1);
-            client.BaseAddress = Uri;
-            var response = await client.GetAsync(path);
+            var response = await _client.GetAsync(path);
 
             var responseString = await response.Content.ReadAsStringAsync();
 
+            if (saveRes)
+            {
+                Response = responseString;
+                State = ServerState.Free;
+            }
+
             return responseString;
         }
+    }
+
+    public enum ServerState
+    {
+        Free,
+        Busy,
+        Down, // TODO
+        NoState
     }
 }

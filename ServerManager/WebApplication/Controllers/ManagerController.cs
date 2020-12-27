@@ -16,12 +16,18 @@ namespace WebApplication.Controllers
         [HttpGet("[action]")]
         public IEnumerable<Server> GetServers()
         {
+            return manager.Servers;
+        }
+
+        [HttpGet("[action]")]
+        public IEnumerable<Server> GetUpdatedServers()
+        {
             manager.UpdateAllServers();
             return manager.Servers;
         }
 
         [HttpPost("[action]")]
-        public ActionResult AddServer([FromBody]RequestUri uri)
+        public ActionResult<IEnumerable<Server>> AddServer([FromBody]RequestUri uri)
         {
             int res = -1;
             try
@@ -34,13 +40,13 @@ namespace WebApplication.Controllers
             }
 
             if (res == 0)
-                return Ok();
+                return Ok(manager.Servers);
             else
                 return Conflict(res);
         }
 
         [HttpPost("[action]")]
-        public ActionResult DeleteServer([FromBody]RequestUri uri)
+        public ActionResult<IEnumerable<Server>> DeleteServer([FromBody]RequestUri uri)
         {
             int res = -1;
             try
@@ -53,7 +59,7 @@ namespace WebApplication.Controllers
             }
 
             if (res == 0)
-                return Ok();
+                return Ok(manager.Servers);
             else
                 return Conflict(res);
         }
